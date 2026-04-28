@@ -1,0 +1,31 @@
+name: Generate Doxygen Documentation
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout cod
+        uses: actions/checkout@v4
+
+      - name: Instalare Doxygen
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen
+
+      - name: Executare Doxygen
+        run: |
+          # Mergem în folderul unde se află Doxyfile
+          cd laboratories/cicd-documentation/
+          doxygen Doxyfile
+
+      - name: Salvare Artefact (Documentatie)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Doxygen-HTML-Docs
+          path: laboratories/cicd-documentation/html/
