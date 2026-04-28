@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build-docs:
     runs-on: ubuntu-latest
@@ -13,6 +16,9 @@ jobs:
       - name: Checkout cod
         uses: actions/checkout@v4
 
+      - name: Debug - Vezi structura folderelor
+        run: ls -R
+
       - name: Instalare Doxygen
         run: |
           sudo apt-get update
@@ -20,11 +26,17 @@ jobs:
 
       - name: Executare Doxygen
         run: |
-          # Mergem în folderul unde se află Doxyfile
+          # Verificăm dacă Doxyfile există înainte de a rula
+          # Ajustează calea de mai jos dacă 'ls -R' îți arată altceva!
           cd laboratories/cicd-documentation/
-          doxygen Doxyfile
+          if [ -f Doxyfile ]; then
+            doxygen Doxyfile
+          else
+            echo "EROARE: Doxyfile nu a fost găsit în laboratories/cicd-documentation/"
+            exit 1
+          fi
 
-      - name: Salvare Artefact (Documentatie)
+      - name: Salvare Artefact
         uses: actions/upload-artifact@v4
         with:
           name: Doxygen-HTML-Docs
