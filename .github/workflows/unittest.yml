@@ -1,0 +1,22 @@
+name: Run Python Unit Tests
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout cod
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Rularea testelor
+        run: |
+          cd laboratories/cicd-documentation/
+          python3 test_tree.py
